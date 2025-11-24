@@ -1,40 +1,94 @@
 ﻿@using MudBlazor
 
+<style>
+    /* 1. Estado ACTIVO (Cuando estás en esa página) */
+    .mud-nav-link.active {
+        background-color: rgba(255, 255, 255, 0.15) !important; /* Fondo semitransparente claro */
+        color: #ffffff !important; /* Texto blanco brillante */
+        font-weight: 500; /* Letra un poco más gruesa */
+        border-radius: 4px; /* Bordes suavizados */
+    }
+
+        /* Asegurar que el ICONO también se ponga blanco brillante */
+        .mud-nav-link.active .mud-icon-root {
+            color: rgba(123, 211, 321, 0.7) !important;
+        }
+
+    /* 2. Estado HOVER (Cuando pasas el mouse por encima pero no haces clic) */
+    .mud-nav-link:hover:not(.active) {
+        color: rgba(123, 211, 321, 0.7) !important; 
+    }
+    /* 3. Estado Icono (Cuando pasas el mouse por encima pero no haces clic) */
+    .mud-nav-link:hover:not(.active) .mud-icon-root {
+        color: rgba(123, 211, 321, 0.7) !important; 
+    }
+
+    /* 4. Estado NORMAL (Texto grisáceo para no cansar la vista) */
+    .mud-nav-link {
+        color: #ffffff !important;
+    }
+
+        .mud-nav-link .mud-icon-root {
+            color: #ffffff !important;
+        }
+</style>
+
 <MudNavMenu Class="mud-width-full">
 
     <MudDivider Class="my-2" />
 
-    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All">
         Dashboard
     </MudNavLink>
 
-    <MudNavGroup Title="Gestión de Libros" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
-
-        <MudNavLink Href="/libros/catalogo" Icon="@Icons.Material.Filled.LibraryBooks">
-            Catálogo de Libros
+    <MudNavGroup Title="Lectores" Icon="@Icons.Material.Filled.Person" Expanded="false">
+        <MudNavLink Href="/lectores/directorio" Icon="@Icons.Material.Filled.ImportContacts">
+            Directorio
         </MudNavLink>
-
-        <MudNavLink Href="/libros/registrar" Icon="@Icons.Material.Filled.AppRegistration">
-            Registrar Nuevo Libro
+        <MudNavLink Href="/lectores/sanciones" Icon="@Icons.Material.Filled.Block">
+            Sanciones
         </MudNavLink>
-
-        <MudNavLink Href="/libros/buscar" Icon="@Icons.Material.Filled.Search">
-            Buscar Libro
-        </MudNavLink>
-
-        <MudNavLink Href="/libros/actualizar" Icon="@Icons.Material.Filled.Update">
-            Actualizar Información
-        </MudNavLink>
-
-        <MudNavLink Href="/libros/eliminar" Icon="@Icons.Material.Filled.Delete">
-            Eliminar Libro
-        </MudNavLink>
-
     </MudNavGroup>
 
+    <MudNavGroup Title="Libros" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
+        <MudNavLink Href="/libros/catalogo" Icon="@Icons.Material.Filled.Inventory2">
+            Catálogo
+        </MudNavLink>
+        <MudNavLink Href="/libros/autores" Icon="@Icons.Material.Filled.RecordVoiceOver">
+            Autores
+        </MudNavLink>
+        <MudNavLink Href="/libros/categorias" Icon="@Icons.Material.Filled.Category">
+            Categorías
+        </MudNavLink>
+    </MudNavGroup>
 
-    <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt">
-        Billing
+    <MudNavGroup Title="Préstamos" Icon="@Icons.Material.Filled.SwapHoriz" Expanded="false">
+        <MudNavLink Href="/prestamos/nuevo" Icon="@Icons.Material.Filled.LibraryAdd">
+            Realizar Préstamo
+        </MudNavLink>
+        <MudNavLink Href="/prestamos/devolucion" Icon="@Icons.Material.Filled.AssignmentReturn">
+            Devoluciones
+        </MudNavLink>
+        <MudNavLink Href="/prestamos/activos" Icon="@Icons.Material.Filled.PendingActions">
+            Préstamos Activos
+        </MudNavLink>
+    </MudNavGroup>
+
+    <MudNavGroup Title="Hemeroteca" Icon="@Icons.Material.Filled.Newspaper" Expanded="false">
+        <MudNavLink Href="/hemeroteca/catalogo" Icon="@Icons.Material.Filled.Inventory">
+            Catálogo General
+        </MudNavLink>
+        <MudNavLink Href="/hemeroteca/ingreso" Icon="@Icons.Material.Filled.PostAdd">
+            Ingresar Documento
+        </MudNavLink>
+    </MudNavGroup>
+
+    <MudNavLink Href="/reportes" Icon="@Icons.Material.Filled.BarChart">
+        Reportes
+    </MudNavLink>
+
+    <MudNavLink Href="/administracion" Icon="@Icons.Material.Filled.AdminPanelSettings">
+        Administración
     </MudNavLink>
 
 </MudNavMenu>
