@@ -1,0 +1,40 @@
+﻿@using MudBlazor
+
+<MudNavMenu Class="mud-width-full">
+
+    <MudDivider Class="my-2" />
+
+    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">
+        Dashboard
+    </MudNavLink>
+
+    <MudNavGroup Title="Gestión de Libros" Icon="@Icons.Material.Filled.MenuBook" Expanded="false">
+
+        <MudNavLink Href="/libros/catalogo" Icon="@Icons.Material.Filled.LibraryBooks">
+            Catálogo de Libros
+        </MudNavLink>
+
+        <MudNavLink Href="/libros/registrar" Icon="@Icons.Material.Filled.AppRegistration">
+            Registrar Nuevo Libro
+        </MudNavLink>
+
+        <MudNavLink Href="/libros/buscar" Icon="@Icons.Material.Filled.Search">
+            Buscar Libro
+        </MudNavLink>
+
+        <MudNavLink Href="/libros/actualizar" Icon="@Icons.Material.Filled.Update">
+            Actualizar Información
+        </MudNavLink>
+
+        <MudNavLink Href="/libros/eliminar" Icon="@Icons.Material.Filled.Delete">
+            Eliminar Libro
+        </MudNavLink>
+
+    </MudNavGroup>
+
+
+    <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt">
+        Billing
+    </MudNavLink>
+
+</MudNavMenu>

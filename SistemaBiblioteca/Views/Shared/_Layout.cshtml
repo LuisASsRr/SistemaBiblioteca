@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SistemaBibliotecario</title>
+
+    <base href="~/" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons&display=swap" rel="stylesheet">
+
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div id="app">
+        <component type="typeof(SistemaBiblioteca.Components.App)" render-mode="ServerPrerendered" />
+    </div>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_framework/blazor.server.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

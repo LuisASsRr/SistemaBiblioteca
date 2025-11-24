@@ -1,40 +1,60 @@
+using Microsoft.AspNetCore.Components.Web; // Necesario para componentes Blazor
 using Microsoft.EntityFrameworkCore;
-using SistemaBiblioteca.Data;
 using MudBlazor.Services;
-
+using SistemaBiblioteca.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// ==========================================================
+// 1. REGISTRO DE SERVICIOS (Dependency Injection Container)
+// ==========================================================
 
+// Servicios principales de MVC
+builder.Services.AddControllersWithViews();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// Servicios necesarios para el Host Blazor Server y enrutamiento .razor
+builder.Services.AddRazorPages();
+builder.Services.AddServerSideBlazor(); // Soporte completo para Blazor Server
+builder.Services.AddSignalR();          // Necesario para la comunicación en tiempo real de Blazor (Soluciona el último error)
 
-
-builder.Services.AddDbContext<BibliotecaContext>(options =>
-    options.UseSqlServer(connectionString));
-
-
+// Servicios de UI: MudBlazor (Corrige el error IBrowserViewportService)
 builder.Services.AddMudServices();
+
+// Servicios de la Base de Datos: Entity Framework Core (SQL Server)
+builder.Services.AddDbContext<BibliotecaContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryContext")));
+
+// ==========================================================
+// 2. CONSTRUCCIÓN DE LA APLICACIÓN (HTTP Pipeline)
+// ==========================================================
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllers();
+// ==========================================================
+// 3. DEFINICIÓN DE ENDPOINTS
+// ==========================================================
+
+// Endpoint para la comunicación Blazor en tiempo real
+app.MapBlazorHub();
+
+
+// Enrutamiento estándar de MVC
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-
-
-
