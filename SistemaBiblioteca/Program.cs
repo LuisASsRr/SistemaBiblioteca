@@ -1,4 +1,6 @@
-using Microsoft.AspNetCore.Components.Web; // Necesario para componentes Blazor
+using Microsoft.AspNetCore.Components.Web;
+    
+    // Necesario para componentes Blazor
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 using SistemaBiblioteca.Data;
@@ -22,7 +24,7 @@ builder.Services.AddMudServices();
 
 // Servicios de la Base de Datos: Entity Framework Core (SQL Server)
 builder.Services.AddDbContext<BibliotecaContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LibraryContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ==========================================================
 // 2. CONSTRUCCIÓN DE LA APLICACIÓN (HTTP Pipeline)

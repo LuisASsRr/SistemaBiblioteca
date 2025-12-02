@@ -1,0 +1,41 @@
+﻿@page "/kl"
+@using MudBlazor
+
+
+
+<PageTitle>Inicio - Biblioteca UNPRG</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-10 text-center">
+
+    <MudIcon Icon="@Icons.Material.Filled.LibraryBooks"
+             Color="Color.Primary"
+             Style="width: 120px; height: 120px;"
+             Class="mb-4" />
+
+    <MudText Typo="Typo.h3" Color="Color.Primary" GutterBottom="true">
+        Bienvenido al Sistema de Biblioteca
+    </MudText>
+
+    <MudText Typo="Typo.h5" Class="mb-8" Color="Color.Secondary">
+        Universidad Nacional Pedro Ruiz Gallo
+    </MudText>
+
+    <MudDivider Class="my-6" />
+
+    <MudText Typo="Typo.body1">
+        Selecciona una opción del menú lateral para comenzar a trabajar.
+    </MudText>
+
+    <MudGrid Justify="Justify.Center" Spacing="4" Class="mt-8">
+        <MudItem>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       Href="libro/autores"
+                       StartIcon="@Icons.Material.Filled.Person">
+                Gestionar Autores
+            </MudButton>
+        </MudItem>
+    </MudGrid>
+
+</MudContainer>

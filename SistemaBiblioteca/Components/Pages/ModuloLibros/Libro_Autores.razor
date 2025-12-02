@@ -1,0 +1,178 @@
+﻿@page "/libros/autores"
+@using MudBlazor
+@using SistemaBiblioteca.Modelos
+@using SistemaBiblioteca.Data
+@using Microsoft.EntityFrameworkCore
+@inherits LayoutComponentBase
+@inject BibliotecaContext Contexto
+
+<style>
+    /* PALETA INSTITUCIONAL */
+    :root {
+        --azul-claro: #7BD2E6;
+        --amarillo: #FFC300;
+        --gris: #747474;
+        --azul-oscuro: #2873B4;
+        --blanco: #FFFFFF;
+    }
+
+    /* Quitamos el background del body para que no invada el menú lateral */
+    .mi-contenedor {
+        background: linear-gradient(135deg, var(--azul-claro), var(--azul-oscuro));
+        border-radius: 12px;
+        padding: 1rem;
+        min-height: 85vh; /* Altura mínima para que se vea bonito */
+    }
+
+    /* Estilos de la tarjeta sin posición absoluta */
+    .mi-card-form {
+        background-color: var(--gris);
+        color: var(--azul-oscuro);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0,0,0,.25);
+    }
+
+    .textosCard {
+        display: block;
+        margin-top: 1rem;
+        font-size: 1rem;
+        color: var(--amarillo);
+        font-weight: bold;
+    }
+
+    .textosFieldField {
+        background: var(--blanco);
+        display: block;
+        margin-top: .2rem;
+        border-radius: 6px;
+    }
+
+    .btn-general {
+        background-color: var(--azul-oscuro) !important;
+        color: var(--blanco) !important;
+        border-radius: 8px !important;
+        font-weight: bold !important;
+        width: 100%; /* Botones anchos para móvil */
+    }
+
+    /* Estilos de la tabla sin posición absoluta */
+    .mi-tabla-container {
+        background: var(--blanco);
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 4px 18px rgba(0,0,0,.25);
+        border: 2px solid var(--azul-oscuro);
+        height: 100%; /* Para que intente igualar altura */
+    }
+
+    .titulo-tabla {
+        color: var(--azul-oscuro);
+        margin-bottom: 1rem;
+        border-bottom: 2px solid var(--amarillo);
+        display: inline-block;
+        font-weight: bold;
+    }
+</style>
+
+@* Usamos MudContainer para dar márgenes generales *@
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+
+    @* El MudGrid es la clave: divide la pantalla en columnas (Total 12 espacios) *@
+    <MudGrid Class="mi-contenedor">
+
+        @* --- COLUMNA IZQUIERDA (TABLA) --- *@
+        @* xs="12" significa que en celus ocupa todo el ancho *@
+        @* md="7" significa que en PC ocupa 7 de 12 espacios (aprox 60%) *@
+        <MudItem xs="12" md="7">
+            <div class="mi-tabla-container">
+                <h3 class="titulo-tabla">AUTORES REGISTRADOS:</h3>
+
+                <MudTable Items="@ListaAutores" Hover="true" Striped="true" Elevation="0" Height="400px" FixedHeader="true">
+                    <HeaderContent>
+                
+                        <MudTh>Nombres</MudTh>
+                        <MudTh>Apellidos</MudTh>
+                        <MudTh>Nacionalidad</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+  
+                        <MudTd DataLabel="Nombres">@context.Nombres</MudTd>
+                        <MudTd DataLabel="Apellidos">@context.Apellidos</MudTd>
+                        <MudTd DataLabel="Nacionalidad">@context.Nacionalidad</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+        </MudItem>
+
+        @* --- COLUMNA DERECHA (FORMULARIO) --- *@
+        @* md="5" ocupa el resto del espacio (5 de 12) *@
+        <MudItem xs="12" md="5">
+
+            @* Título e instrucciones *@
+            <MudText Typo="Typo.h5" Style="color: var(--amarillo); font-weight:bold; margin-bottom: 10px;">
+                Registrar Nuevo Autor:
+            </MudText>
+
+            <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="mb-4">
+                Ingrese los datos correctamente.
+            </MudAlert>
+
+            @* Tarjeta del formulario *@
+            <MudCard Class="mi-card-form">
+                <MudText Class="textosCard">Nombres:</MudText>
+                <MudTextField Class="textosFieldField" @bind-Value="Nombre" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+
+                <MudText Class="textosCard">Apellidos:</MudText>
+                <MudTextField Class="textosFieldField" @bind-Value="Apellidos" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+
+                <MudText Class="textosCard">Nacionalidad:</MudText>
+                <MudTextField Class="textosFieldField" @bind-Value="Nacionalidad" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+
+                <div class="d-flex justify-end gap-2 mt-8">
+                    <MudButton Class="btn-general" OnClick="RegistrarAutor">Registrar</MudButton>
+                    <MudButton Class="btn-general" OnClick="ModificarAutor">Modificar</MudButton>
+                    <MudButton Class="btn-general" OnClick="EliminarAutor">Eliminar</MudButton>
+                </div>
+            </MudCard>
+
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private string Nombre { get; set; } = string.Empty;
+    private string Apellidos { get; set; } = string.Empty;
+    private string Nacionalidad { get; set; } = string.Empty;
+
+    private List<Autor> ListaAutores = new List<Autor>();
+    private string? ErrorMensaje;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            if (Contexto.Autores != null)
+            {
+                ListaAutores = await Contexto.Autores.ToListAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMensaje = ex.Message;
+        }
+    }
+
+    private async Task RegistrarAutor()
+    {
+
+    }
+    private async Task ModificarAutor()
+    {
+
+    }
+    private async Task EliminarAutor()
+    {
+        
+    }
+}

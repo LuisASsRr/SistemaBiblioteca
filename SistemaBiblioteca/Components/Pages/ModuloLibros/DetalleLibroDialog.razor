@@ -1,0 +1,96 @@
+﻿@using MudBlazor
+@using SistemaBiblioteca.Modelos
+
+<MudDialog>
+    <DialogContent>
+        <div style="position: relative;">
+
+            <MudIconButton OnClick="Cerrar" Icon="@Icons.Material.Filled.Close" Color="Color.Dark"
+                           Style="position: absolute; right: -10px; top: -10px; z-index: 10;" />
+
+            <MudGrid>
+                <MudItem xs="12" sm="5" Class="d-flex justify-center align-start">
+                    <MudImage Src="@(LibroSeleccionado.ImagenUrl ?? "https://via.placeholder.com/300x450")"
+                              ObjectFit="ObjectFit.Cover"
+                              Class="rounded-lg elevation-4"
+                              Style="width: 100%; max-width: 300px; aspect-ratio: 2/3;" />
+                </MudItem>
+
+                <MudItem xs="12" sm="7">
+
+                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                        @foreach (var cat in LibroSeleccionado.Categorias)
+                        {
+                            <MudChip Size="Size.Small" Color="Color.Info" Variant="Variant.Text">@cat.NombreCategoria</MudChip>
+                        }
+                    </div>
+
+                    <MudText Typo="Typo.h4" Style="font-weight:800; line-height:1.1; color:#2c3e50;">
+                        @LibroSeleccionado.Titulo
+                    </MudText>
+
+                    <MudText Typo="Typo.h6" Color="Color.Secondary" Class="mt-1 mb-4">
+                        @(LibroSeleccionado.Autores.Any() ? string.Join(", ", LibroSeleccionado.Autores.Select(a => a.Nombres + " " + a.Apellidos)) : "Autor no registrado")
+                    </MudText>
+
+                    <MudDivider Class="my-4" />
+
+                    <MudGrid Spacing="2">
+                        <MudItem xs="6">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">
+
+                            </MudText>
+                            <MudText Typo="Typo.body2">@(LibroSeleccionado.ISBN ?? "N/A")</MudText>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">Edición / Año</MudText>
+                            <MudText Typo="Typo.body2">@LibroSeleccionado.Edicion (@LibroSeleccionado.AnioPublicacion)</MudText>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">Ubicación</MudText>
+                            <MudText Typo="Typo.body2">Estante: @LibroSeleccionado.NumEstanteria</MudText>
+                        </MudItem>
+                        <MudItem xs="6">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary">Páginas</MudText>
+                            <MudText Typo="Typo.body2">@LibroSeleccionado.NumPaginas págs.</MudText>
+                        </MudItem>
+                    </MudGrid>
+
+                    <MudAlert Severity="@(LibroSeleccionado.Stock > 0 ? Severity.Success : Severity.Error)" Variant="Variant.Filled" Class="mt-6 rounded-lg">
+                        @if (LibroSeleccionado.Stock > 0)
+                        {
+                            <MudText><b>¡Disponible!</b> Quedan @LibroSeleccionado.Stock copias en biblioteca.</MudText>
+                        }
+                        else
+                        {
+                            <MudText><b>Agotado.</b> Todas las copias están prestadas.</MudText>
+                        }
+                    </MudAlert>
+
+                </MudItem>
+            </MudGrid>
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        @if (LibroSeleccionado.Stock > 0)
+        {
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" FullWidth="true" StartIcon="@Icons.Material.Filled.BookmarkAdd" Class="mx-4 mb-2 rounded-pill">
+                Solicitar Préstamo
+            </MudButton>
+        }
+        else
+        {
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" FullWidth="true" Class="mx-4 mb-2 rounded-pill" Disabled="true">
+                No Disponible
+            </MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public Libro LibroSeleccionado { get; set; }
+
+    private void Cerrar() => MudDialog.Cancel();
+}

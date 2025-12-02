@@ -1,0 +1,216 @@
+﻿@page "/libros/gestion"
+@using MudBlazor
+@inherits LayoutComponentBase
+
+<style>
+    /* --- ESTILOS (Tu paleta de colores) --- */
+    :root {
+        --azul-claro: #7BD2E6;
+        --amarillo: #FFC300;
+        --gris: #747474;
+        --azul-oscuro: #2873B4;
+        --blanco: #FFFFFF;
+    }
+
+    .mi-contenedor {
+        background: linear-gradient(135deg, var(--azul-claro), var(--azul-oscuro));
+        border-radius: 12px;
+        padding: 1rem;
+        min-height: 90vh;
+    }
+
+    /* Panel Izquierdo */
+    .panel-lista {
+        background-color: var(--blanco);
+        border-radius: 12px;
+        height: 100%;
+        padding: 1rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    /* Panel Derecho */
+    .panel-formulario {
+        background-color: var(--gris);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+        color: var(--azul-oscuro);
+    }
+
+    /* Zona Drag & Drop */
+    .drag-drop-zone {
+        border: 2px dashed var(--azul-oscuro) !important;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 8px;
+        height: 200px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .file-input-invisible {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 10;
+        cursor: pointer;
+    }
+
+    .input-blanco {
+        background-color: var(--blanco) !important;
+        border-radius: 4px;
+    }
+</style>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-2">
+    <MudGrid Class="mi-contenedor">
+
+        @* ============================================================== *@
+        @* === COLUMNA IZQUIERDA: BUSCADOR Y LISTA === *@
+        @* ============================================================== *@
+        <MudItem xs="12" md="5">
+            <div class="panel-lista">
+                <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-3">
+                    <MudIcon Icon="@Icons.Material.Filled.Search" Class="mr-1" />
+                    Buscador
+                </MudText>
+
+                <MudTextField T="string"
+                              Placeholder="Buscar por Título, ISBN o Cód. Copia..."
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Class="mb-4" />
+
+                <MudTable Items="@ListaVisualParaDiseño" Hover="true" Dense="true" Striped="true" FixedHeader="true" Height="70vh" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Portada</MudTh>
+                        <MudTh>Información</MudTh>
+                        <MudTh Style="text-align:center">Acciones</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>
+                            <MudIcon Icon="@Icons.Material.Filled.Image" Size="Size.Medium" Color="Color.Secondary" />
+                        </MudTd>
+                        <MudTd>
+                            <MudText Typo="Typo.subtitle2" Style="font-weight:bold;">@context</MudText>
+                            <MudText Typo="Typo.caption">ISBN: 978-0-00-000</MudText>
+                            <br />
+                            <MudChip Size="Size.Small" Color="Color.Info" Class="mt-1">Stock: 5</MudChip>
+                        </MudTd>
+                        <MudTd Style="text-align:center">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" Size="Size.Small" />
+                            <MudIconButton Icon="@Icons.Material.Filled.LibraryBooks" Color="Color.Primary" Size="Size.Small" />
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+        </MudItem>
+
+        @* ============================================================== *@
+        @* === COLUMNA DERECHA: FORMULARIO === *@
+        @* ============================================================== *@
+        <MudItem xs="12" md="7">
+
+            <MudText Typo="Typo.h5" Style="color: var(--amarillo); font-weight:bold; margin-bottom: 10px;">
+                Registrar / Editar Libro
+            </MudText>
+
+            <MudCard Class="panel-formulario">
+                <MudGrid>
+
+                    @* 1. IMAGEN (Drag & Drop) *@
+                    <MudItem xs="12" sm="4">
+                        <MudPaper Class="drag-drop-zone" Elevation="0">
+                            <InputFile class="file-input-invisible" accept=".png, .jpg, .jpeg" />
+
+                            <div class="d-flex flex-column align-center justify-center text-center">
+                                <MudIcon Icon="@Icons.Material.Filled.CloudUpload" Size="Size.Large" Color="Color.Primary" />
+                                <MudText Typo="Typo.caption" Color="Color.Dark">Arrastra Portada</MudText>
+                            </div>
+                        </MudPaper>
+                    </MudItem>
+
+                    @* 2. DATOS TEXTO *@
+                    <MudItem xs="12" sm="8">
+                        <MudTextField T="string" Label="Título del Libro" Variant="Variant.Outlined" Class="input-blanco mb-2" />
+                        <MudGrid>
+                            <MudItem xs="6">
+                                <MudTextField T="string" Label="ISBN" Variant="Variant.Outlined" Class="input-blanco" />
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudTextField T="string" Label="Edición" Variant="Variant.Outlined" Class="input-blanco" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    @* 3. SELECTS (Autores y Categorías) *@
+                    <MudItem xs="6">
+                        <MudSelect T="string" Label="Autores" MultiSelection="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="input-blanco" Dense="true">
+                            <MudSelectItem Value="@("Gabriel García M.")" />
+                            <MudSelectItem Value="@("Mario Vargas Ll.")" />
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudSelect T="string" Label="Categorías" MultiSelection="true" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter" Class="input-blanco" Dense="true">
+                            <MudSelectItem Value="@("Novela")" />
+                            <MudSelectItem Value="@("Historia")" />
+                        </MudSelect>
+                    </MudItem>
+
+                    @* 4. DATOS NUMÉRICOS (Año, Pag, Estante) *@
+                    <MudItem xs="4">
+                        <MudNumericField T="int" Label="Año" Variant="Variant.Outlined" Class="input-blanco" Margin="Margin.Dense" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudNumericField T="int" Label="Páginas" Variant="Variant.Outlined" Class="input-blanco" Margin="Margin.Dense" />
+                    </MudItem>
+                    <MudItem xs="4">
+                        <MudTextField T="string" Label="Estante" Variant="Variant.Outlined" Class="input-blanco" Margin="Margin.Dense" />
+                    </MudItem>
+
+                    @* 5. GESTIÓN DE COPIAS / STOCK (Tu requerimiento específico) *@
+                    <MudItem xs="12">
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mt-2 input-blanco">
+                            <MudText Typo="Typo.subtitle2" Color="Color.Primary"><b>Gestión de Stock (Copias)</b></MudText>
+                            <MudGrid>
+                                <MudItem xs="6">
+                                    <MudNumericField T="int" Label="Cantidad de Copias a Agregar" Variant="Variant.Outlined" Min="0" Max="100" Margin="Margin.Dense" />
+                                </MudItem>
+                                <MudItem xs="6">
+                                    <MudSelect T="string" Label="Estado de estas copias" Variant="Variant.Outlined" Margin="Margin.Dense">
+                                        <MudSelectItem Value="@("Disponible (Nuevo)")" />
+                                        <MudSelectItem Value="@("Deteriorado (Donación)")" />
+                                    </MudSelect>
+                                </MudItem>
+                            </MudGrid>
+                        </MudAlert>
+                    </MudItem>
+
+                </MudGrid>
+
+                <div class="d-flex justify-end gap-2 mt-4">
+                    <MudButton Variant="Variant.Text" Color="Color.Error">Cancelar</MudButton>
+                    <MudButton Class="btn-general" StartIcon="@Icons.Material.Filled.Save" Size="Size.Large">
+                        Registrar Libro
+                    </MudButton>
+                </div>
+
+            </MudCard>
+        </MudItem>
+
+    </MudGrid>
+</MudContainer>
+
+@code {
+    // ESTE BLOQUE ES SOLO PARA QUE EL DISEÑO SE VEA.
+    // TÚ DEBES BORRAR ESTO Y PONER TU PROPIA LÓGICA C#
+
+    // Lista falsa solo para visualizar la tabla izquierda
+    private List<string> ListaVisualParaDiseño = new List<string> {
+        "Cien Años de Soledad", "El Principito", "Don Quijote"
+    };
+}
